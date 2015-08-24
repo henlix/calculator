@@ -1,7 +1,18 @@
 package org.sopt.study.data.structure.calculation.util;
 
-/**
- * Created by callisto on 8/21/15.
- */
-public class TokenType {
+public enum TokenType {
+
+    UNDEFINED,
+
+    BRACKET_LEFT,
+    BRACKET_RIGHT,
+
+    OPERATOR_ADD,
+    OPERATOR_SUB,
+    OPERATOR_MUL,
+    OPERATOR_DIV,
+    OPERATOR_MOD,
+
+    OPERAND,
+    SEPERATOR,
 }

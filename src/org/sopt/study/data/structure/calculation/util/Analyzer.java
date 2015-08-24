@@ -1,37 +1,46 @@
 package org.sopt.study.data.structure.calculation.util;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 public class Analyzer {
 
-    public ArrayList<Token> analyze(String str) {
+    private ArrayList<Token> analyzed = new ArrayList<>();
 
-        ArrayList<Token> tokens = new ArrayList<>();
+    private String content;
+    public void load(String content) { this.content = content; }
 
-        StringBuffer buffer = new StringBuffer();
+    public void analyze() {
 
-        for (char ch : str.toCharArray()) {
+        if (content == null)
+            throw new IllegalStateException("Content cannot be null.");
+
+        analyzed.clear();
+
+        StringBuilder operand = new StringBuilder();
+
+        for (char ch : content.toCharArray()) {
 
             if (ch == ' ')
                 continue;
 
             if (Character.isDigit(ch) || ch == '.') {
 
-                buffer.append(ch);
+                operand.append(ch);
                 continue;
             }
 
-            if (buffer.length() > 0) {
+            if (operand.length() > 0) {
 
-                tokens.add(new Token(TokenType.OPERAND, Float.valueOf(buffer.toString())));
-                buffer.delete(0, buffer.length());
+                analyzed.add(new Token(TokenType.OPERAND, Float.valueOf(operand.toString())));
+                operand.delete(0, operand.length());
             }
 
-            tokens.add(createNoneOperandToken(ch));
+            analyzed.add(createNoneOperandToken(ch));
         }
 
-        tokens.add(new Token(TokenType.SEPERATOR, "#"));
-        return tokens;
+        if (operand.length() > 0)
+            analyzed.add(new Token(TokenType.OPERAND, Float.valueOf(operand.toString())));
     }
 
     private Token createNoneOperandToken(char ch) {
@@ -51,5 +60,50 @@ public class Analyzer {
         }
 
         return new Token(type, ch);
+    }
+
+
+    public ArrayList<Token> postfix() {
+
+        if (analyzed.size() == 0)
+            throw new IllegalStateException("Cannot find analyzed result. Please analyze first.");
+
+        Stack<Token> stack = new Stack<>();
+        stack.push(new Token(TokenType.SEPERATOR, "#"));
+
+        ArrayList<Token> result = new ArrayList<>();
+
+        for (Token token : analyzed) {
+
+            if (token.type == TokenType.OPERAND) {
+
+                result.add(token);
+            }
+            else if (token.type == TokenType.BRACKET_LEFT) {
+
+                stack.push(token);
+            }
+            else if (token.type == TokenType.BRACKET_RIGHT) {
+
+                while (stack.peek().type != TokenType.BRACKET_LEFT)
+                    result.add(stack.pop());
+
+                stack.pop(); // pop '('
+            }
+            else {
+
+                while (stack.peek().isp() <= token.icp())
+                    result.add(stack.pop());
+
+                stack.push(token);
+            }
+        }
+
+
+
+        while (stack.peek().type != TokenType.SEPERATOR)
+            result.add(stack.pop());
+
+        return result;
     }
 }

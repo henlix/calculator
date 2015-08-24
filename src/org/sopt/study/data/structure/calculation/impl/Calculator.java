@@ -18,12 +18,6 @@ public class Calculator {
         analyzer.analyze();
 
         ArrayList<Token> postfix = analyzer.postfix();
-
-        for (Token token : postfix)
-            System.out.println("> " + token);
-
-        System.out.println("=================================");
-
         Stack<Token> stack = new Stack<>();
 
         for (Token token : postfix) {
@@ -38,9 +32,6 @@ public class Calculator {
                 Token operand2 = stack.pop();
 
                 Token result = operate(operand1, operand2, token);
-
-                System.out.println(">> " + result);
-
                 stack.push(result);
             }
         }
