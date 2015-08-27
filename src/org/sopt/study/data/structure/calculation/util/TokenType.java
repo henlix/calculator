@@ -14,5 +14,5 @@ public enum TokenType {
     OPERATOR_MOD,
 
     OPERAND,
-    SEPERATOR,
+    SEPARATOR,
 }

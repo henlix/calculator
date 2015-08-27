@@ -5,7 +5,7 @@ import java.util.Stack;
 
 public class Analyzer {
 
-    private ArrayList<Token> analyzed = new ArrayList<>();
+    private ArrayList<Token> analyzed;
 
     private String content;
     public void load(String content) { this.content = content; }
@@ -15,7 +15,7 @@ public class Analyzer {
         if (content == null)
             throw new IllegalStateException("Content cannot be null.");
 
-        analyzed.clear();
+        analyzed = new ArrayList<>();
 
         StringBuilder operand = new StringBuilder();
 
@@ -69,7 +69,7 @@ public class Analyzer {
             throw new IllegalStateException("Cannot find analyzed result. Please analyze first.");
 
         Stack<Token> stack = new Stack<>();
-        stack.push(new Token(TokenType.SEPERATOR, "#"));
+        stack.push(new Token(TokenType.SEPARATOR, "#"));
 
         ArrayList<Token> result = new ArrayList<>();
 
@@ -101,7 +101,7 @@ public class Analyzer {
 
 
 
-        while (stack.peek().type != TokenType.SEPERATOR)
+        while (stack.peek().type != TokenType.SEPARATOR)
             result.add(stack.pop());
 
         return result;
